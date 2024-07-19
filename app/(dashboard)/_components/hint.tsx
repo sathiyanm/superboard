@@ -6,12 +6,12 @@ import {
 } from "@/components/ui/tooltip";
 
 export interface HintProps {
-  label: string,
-  children: React.ReactNode,
-  side?: "top" | "center" | "end" | "right",
-  align?: "start" | "center" | "end",
-  sideOffset?: number,
-  alignOffset?: number
+  label: string;
+  children: React.ReactNode;
+  side?: "top" | "right" | "bottm" | "right";
+  align?: "start" | "center" | "end";
+  sideOffset?: number;
+  alignOffset?: number;
 }
 
 export const Hint = ({
