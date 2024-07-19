@@ -2,10 +2,7 @@
 import React from 'react'
 import {
     Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
+    DialogContent,   
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { Plus } from 'lucide-react'
