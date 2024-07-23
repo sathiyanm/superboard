@@ -52,8 +52,6 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 
   const selections = useOthersMapped((other) => other.presence.selection);
 
-  console.log("selections, xxx", selections, selections, layerIds)
-
   const layerIdsToColorSelection = useMemo(() => {
     const layerIdsToColorSelection: Record<string, string> = {};
 

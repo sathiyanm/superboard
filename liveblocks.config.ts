@@ -28,7 +28,7 @@ type Presence = {
 // automatically persisted and synced to all connected clients.
 type Storage = {
   layers: LiveMap<string, LiveObject<Layer>>;
-  layerIds?: LiveList<string>;
+  layerIds: LiveList<string>;
 };
 
 // Optionally, UserMeta represents static/readonly metadata on each user, as
@@ -71,10 +71,7 @@ export const {
     useBroadcastEvent,
     useEventListener,
     useErrorListener,
-    useStorage,
-    useObject,
-    useMap,
-    useList,
+    useStorage,   
     useBatch,
     useHistory,
     useUndo,

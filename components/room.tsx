@@ -24,7 +24,7 @@ export const Room = ({ children, roomId, fallback }: RoomProps) => {
       }}
       initialStorage={{
         layers: new LiveMap<string, LiveObject<Layer>>(),
-        layerIds:  new LiveList([])
+        layerIds: new LiveList<string>([]),
       }}
     >
       <ClientSideSuspense fallback={fallback}>

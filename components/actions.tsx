@@ -1,74 +1,66 @@
 "use client";
 
-import { DropdownMenuContentProps } from "@radix-ui/react-dropdown-menu";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
-
 import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 import { useApiMutation } from "@/hooks/useApiMutation";
-
+import { useRenameModal } from "@/store/useRenameModal";
+import type { DropdownMenuContentProps } from "@radix-ui/react-dropdown-menu";
 import { Link2, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "./ui/button";
 import ConfirmModal from "./cofirm-modal";
-import { useRenameModal } from "@/store/useRenameModal";
-
-interface ActionProps {
+import { Button } from "./ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+interface ActionsProp {
   children: React.ReactNode;
-  side: DropdownMenuContentProps["side"];
+  side?: DropdownMenuContentProps["side"];
   sideOffset?: DropdownMenuContentProps["sideOffset"];
   id: string;
   title: string;
 }
 
-export const Actions = ({
+export function Actions({
   children,
   side,
   sideOffset,
   id,
   title,
-}: ActionProps) => {
+}: ActionsProp) {
   const { onOpen } = useRenameModal();
-  const { mutate, isLoading } = useApiMutation(api.board.remove);
+  const { mutate: remove, isLoading } = useApiMutation(api.board.remove);
 
-  const onCopyLink = () => {
+  const handleCopyLink = () => {
     navigator.clipboard
-      .writeText(`${window.location.origin}/board/${id}`)
-      .then(() => {
-        toast("copied to clipbaord");
-      })
-      .catch(() => {
-        toast("failed to copy");
-      });
+      .writeText(`${window.location.origin}/boards/${id}`)
+      .then(() => toast.success("Link copied!"))
+      .catch(() => toast.error("Failed to copy link"));
   };
-  const onDelete = () => {
-    mutate({ id })
-      .then(() => {
-        toast(`Board ${id} has been delelted`);
-      })
-      .catch(() => {
-        toast(`Board ${id} Unable to delete some error`);
-      });
+
+  const handleDelete = () => {
+    remove({ id: id as Id<"boards"> })
+      .then(() => toast.success("Board deleted!"))
+      .catch(() => toast.error("Failed to delete board"));
   };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
       <DropdownMenuContent
-        title={title}
-        className="w-60"
+        onClick={(e) => e.stopPropagation()}
         side={side}
         sideOffset={sideOffset}
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
+        className="w-60"
       >
-        <DropdownMenuItem onClick={onCopyLink} className="p-3 cursor-pointer">
+        <DropdownMenuItem
+          className="p-3 cursor-pointer"
+          onClick={handleCopyLink}
+        >
           <Link2 className="h-4 w-4 mr-2" />
-          Copy to clipboard
+          Copy board link
         </DropdownMenuItem>
         <DropdownMenuItem
           className="p-3 cursor-pointer"
@@ -77,22 +69,21 @@ export const Actions = ({
           <Pencil className="h-4 w-4 mr-2" />
           Rename
         </DropdownMenuItem>
-
-        {/* <DropdownMenuItem className="p-3 cursor-pointer"> */}
-          <ConfirmModal
-            onConfirm={onDelete}
-            disabled={isLoading}
-            header={"Are you sure?"}
-            description={
-              "This action cannot be undone. This will permanently delete your board and remove your data from our servers."
-            }
+        <ConfirmModal
+          header="Delete board?"
+          description="This will delete the board and all of its content"
+          disabled={isLoading}
+          onConfirm={handleDelete}
+        >
+          <Button
+            className="p-3 cursor-pointer w-full justify-start font-normal"
+            variant="ghost"
           >
-            <Button variant={"ghost"} className="p-3 cursor-pointer text-sm w-full justify-start font-normal">
-              Delete
-            </Button>
-          </ConfirmModal>
-        {/* </DropdownMenuItem> */}
+            <Trash2 className="h-4 w-4 mr-2" />
+            Delete
+          </Button>
+        </ConfirmModal>
       </DropdownMenuContent>
     </DropdownMenu>
   );
-};
+}
